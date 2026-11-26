@@ -87,9 +87,9 @@ var app = builder.Build();
 // Crear la base de datos y cargar datos iniciales (HasData) si no existe
 using (IServiceScope scope = app.Services.CreateScope())
 {
-AppDbContext contexto =
-scope.ServiceProvider.GetRequiredService<AppDbContext>();
-contexto.Database.Migrate();
+    AppDbContext contexto =
+    scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    contexto.Database.Migrate();
 }
 
 app.UseMiddleware<ManejoErroresMiddleware>();

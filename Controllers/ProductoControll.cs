@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Farmaco.Dtos;
 using Farmaco.Modelos;
 using Farmaco.Servicios;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Farmaco.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize] // ← todo cerrado
+
 public class ProductoController(ServicioProductos servicio) : ControllerBase
 {
     [HttpGet]
@@ -52,7 +55,7 @@ public class ProductoController(ServicioProductos servicio) : ControllerBase
         return Ok("Producto eliminado correctamente.");
     }
 
-    // En ProductoControll.cs
+    [AllowAnonymous] // ← abierto
     [HttpGet("buscar")]
     public ActionResult<ResultadoPaginado<Producto>> Buscar([FromQuery] FiltroProducto filtro)
     {

@@ -32,11 +32,6 @@ C:\Users\User\Documents\prueba\Farmacia\Farmacia\obj\Debug\net10.0\refint\Farmac
 C:\Users\User\Documents\prueba\Farmacia\Farmacia\obj\Debug\net10.0\Farmacia.pdb
 C:\Users\User\Documents\prueba\Farmacia\Farmacia\obj\Debug\net10.0\Farmacia.genruntimeconfig.cache
 C:\Users\User\Documents\prueba\Farmacia\Farmacia\obj\Debug\net10.0\ref\Farmacia.dll
-C:\Users\User\Documents\prueba\Farmacia\Farmacia\bin\Debug\net10.0\Cliente.postman_collection.json
-C:\Users\User\Documents\prueba\Farmacia\Farmacia\bin\Debug\net10.0\Empleados.postman_collection.json
-C:\Users\User\Documents\prueba\Farmacia\Farmacia\bin\Debug\net10.0\Producto.postman_collection.json
-C:\Users\User\Documents\prueba\Farmacia\Farmacia\bin\Debug\net10.0\Proveedor.postman_collection.json
-C:\Users\User\Documents\prueba\Farmacia\Farmacia\bin\Debug\net10.0\Ventassss1.postman_collection.json
 C:\Users\User\Documents\prueba\Farmacia\Farmacia\bin\Debug\net10.0\Microsoft.Data.Sqlite.dll
 C:\Users\User\Documents\prueba\Farmacia\Farmacia\bin\Debug\net10.0\Microsoft.EntityFrameworkCore.dll
 C:\Users\User\Documents\prueba\Farmacia\Farmacia\bin\Debug\net10.0\Microsoft.EntityFrameworkCore.Abstractions.dll

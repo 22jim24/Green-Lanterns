@@ -2,13 +2,18 @@ using Microsoft.AspNetCore.Mvc;
 using Farmaco.Dtos;
 using Farmaco.Modelos;
 using Farmaco.Servicios;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Farmaco.Controllers;
 [ApiController]
 [Route("api/[controller]")]
+[Authorize] // ← todo cerrado
 public class VentasController(ServicioVentas servicio) : ControllerBase
 {
-[HttpGet]
+    [AllowAnonymous] // ← abierto
+
+    [HttpGet]
     public ActionResult<List<Ventas>> ListarTodos()
     {
         return Ok(servicio.ListarTodos());

@@ -38,8 +38,7 @@ public class ServicioVentas(IReVenta repositorio, AppDbContext contexto)
 
             // Aquí iría cualquier segunda escritura (ej. descontar stock del producto)
 
-            // Descomenta esta línea solo para probar el rollback en Postman, luego bórrala:
-            throw new Exception("Falla simulada");
+            //throw new Exception("Falla simulada");
 
             transaccion.Commit();
             return nueva;
