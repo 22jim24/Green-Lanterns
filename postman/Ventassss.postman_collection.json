@@ -1,0 +1,132 @@
+{
+  "info": {
+    "_postman_id": "06d4ca6f-350f-4259-a089-19788562d819",
+    "name": "Ventassss",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56433073",
+    "_collection_link": "https://go.postman.co/collection/56433073-06d4ca6f-350f-4259-a089-19788562d819?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Vnetas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5124/api/ventas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5124",
+          "path": [
+            "api",
+            "ventas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ventas x name",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5124/api/ventas/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5124",
+          "path": [
+            "api",
+            "ventas",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CREATEVENTA",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"clienteDni\": \"72451234\",\r\n  \"idVenta\": 5,\r\n  \"nombreCliente\": \"Ana Torres\",\r\n  \"nombreProducto\": \"Vitamina C\",\r\n  \"cantidad\": 2,\r\n  \"precio\": 12.50,\r\n  \"metodoPago\": \"TARJETA\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5124/api/Ventas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5124",
+          "path": [
+            "api",
+            "Ventas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UPDATE",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"idVenta\": 5,\r\n  \"clienteDni\": \"72451234\",\r\n  \"nombreCliente\": \"Ana Torres\",\r\n  \"nombreProducto\": \"Vitamina C + Zinc\",\r\n  \"cantidad\": 4,\r\n  \"precio\": 10.50,\r\n  \"metodoPago\": \"YAPE_PLIN\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5124/api/Ventas/5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5124",
+          "path": [
+            "api",
+            "Ventas",
+            "5"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5124/api/Ventas/5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5124",
+          "path": [
+            "api",
+            "Ventas",
+            "5"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

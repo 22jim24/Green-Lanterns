@@ -11,11 +11,14 @@ API RESTful desarrollada en **ASP.NET Core (.NET 10.0)** para la administración
 ```text
 Farmacia/
 ├── Controllers/
+│   ├── AuthController.cs
 │   ├── ClienteControll.cs
 │   ├── EmpleadosControll.cs
 │   ├── ProductoControll.cs
 │   ├── ProveedoresControll.cs
 │   └── VentasControll.cs
+├── Datos/
+│   └── AppDbContext.cs
 ├── Dtos/
 │   ├── Cliente/
 │   │   ├── CreateCliente.cs
@@ -32,12 +35,25 @@ Farmacia/
 │   ├── Venta/
 │   │   ├── CreateVenta.cs
 │   │   └── UpdateVenta.cs
+│   ├── jwt/ 
+│   │   ├──LoginRequest.cs
+│   │   ├──RegistroRequest.cs
+│   │   └──TokenResponse.cs
 │   └── ErrorResponse.cs
 ├── Excepciones/
 │   ├── ConflictoException.cs
+│   ├── CredencialesInvalidasException.cs
 │   └── RecursoNoEncontradoException.cs
 ├── Middlewares/
 │   └── ManejoErrores.cs
+├── Migrations/
+│   ├── 20261116232251_Inicial.cs
+│   ├── 20261116232251_Inicial.Designer.cs 
+│   ├── 20261117044759_RelacionClienteVentas.cs
+│   ├── 20261117044759_RelacionClienteVentas.Designer.cs
+│   ├── 20261120030340_AgregarIdentity.cs
+│   ├── 20261120030340_AgregarIdentity.Designer.cs
+│   └── AppDbContextModelSnapshot.cs
 ├── Modelos/
 │   ├── Cliente.cs
 │   ├── Empleados.cs
@@ -45,6 +61,13 @@ Farmacia/
 │   ├── Producto.cs
 │   ├── Proovedor.cs
 │   └── Ventas.cs
+├── Postman/
+│   ├── Clientes.postman_collection.json
+│   ├── Empleado.postman_collection.json
+│   ├── jwt.postman_collection.json
+│   ├── Productos.postman_collection.json
+│   ├── Proveedores.postman_collection.json
+│   └── Ventassss.postman_collection.json
 ├── Repositorios/
 │   ├── ReCliente/
 │   │   ├── IReCliente.cs
@@ -62,6 +85,9 @@ Farmacia/
 │       ├── IReVenta.cs
 │       └── ReVentaRam.cs
 ├── Servicios/
+│   ├── Jwt2/ 
+│   │   ├── ServicioAutenticacion.cs
+│   │   └── ServicioToken.cs      
 │   ├── serviceCliente.cs
 │   ├── serviceEmpleados.cs
 │   ├── serviceProducto.cs
@@ -69,206 +95,201 @@ Farmacia/
 │   └── serviceVentas.cs
 ├── appsettings.Development.json
 ├── appsettings.json
-├── Cliente.postman_collection.json
-├── Empleados.postman_collection.json
 ├── Farmacia.csproj
 ├── Farmacia.http
-├── Producto.postman_collection.json
 ├── Program.cs
-├── Proveedor.postman_collection.json
-├── README.md
-└── Ventassss1.postman_collection.json
+└── README.md
 ```
 
 ---
 
-## 🚀 Requisitos y Ejecución
+## ⚙️ Requisitos Previos
 
-1. Tener instalado el **SDK de .NET 10.0**.
-2. Abrir una terminal en la carpeta raíz del proyecto (`Farmacia`).
-3. Ejecutar los siguientes comandos:
-
-```bash
-dotnet restore
-dotnet run
-```
+- [.NET SDK](https://dotnet.microsoft.com/download) instalado.
+- Motor de base de datos configurado según tu cadena de conexión en `appsettings.json`.
+- [Postman](https://www.postman.com/downloads/) (opcional, para ejecutar las pruebas incluidas).
 
 ---
 
-## 📌 Documentación de Endpoints y Ejemplos
+## ▶️ Instalación y Ejecución
 
-### 1. Módulo de Ventas (`/api/ventas`)
-Gestiona las transacciones de venta. Cada registro cuenta con un `IdVenta` único para permitir que un mismo cliente realice múltiples compras.
+1. **Clonar el repositorio:**
+   ```bash
+   git clone <URL_DE_TU_REPOSITORIO>
+   cd <NOMBRE_DE_LA_CARPETA>
+   ```
 
-| Método | Endpoint | Descripción | Respuestas |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/ventas` | Lista todas las ventas registradas. | `200 OK` |
-| `GET` | `/api/ventas/{idVenta}` | Busca una venta específica por su ID. | `200 OK`, `404 Not Found` |
-| `GET` | `/api/ventas/metodo-pago/{metodo}` | Filtra las ventas por método de pago (`EFECTIVO`, `TARJETA`, `YAPE_PLIN`, `TRANSFERENCIA`). | `200 OK` |
-| `POST` | `/api/ventas` | Crea una nueva venta y calcula el total automáticamente. | `201 Created`, `400 Bad Request`, `409 Conflict` |
-| `PUT` | `/api/ventas/{idVenta}` | Actualiza una venta existente y recalcula el total. | `200 OK`, `400 Bad Request`, `404 Not Found` |
-| `DELETE` | `/api/ventas/{idVenta}` | Elimina una venta por su ID. | `200 OK`, `404 Not Found` |
+2. **Configurar variables y conexión a base de datos:**
+   Verifica la cadena de conexión y la clave secreta de JWT en `appsettings.json`.
 
-#### Ejemplo: Crear Venta (`POST /api/ventas`)
+3. **Aplicar migraciones de Entity Framework Core:**
+   ```bash
+   dotnet ef database update
+   ```
+
+4. **Ejecutar la aplicación:**
+   ```bash
+   dotnet run
+   ```
+
+La API estará disponible por defecto en: `http://localhost:5124`
+
+---
+
+## 📡 Documentación de Endpoints
+
+### 🔐 Autenticación (`/api/auth`)
+
+| Método | Endpoint | Descripción | Autenticación |
+| :--- | :--- | :--- | :---: |
+| `POST` | `/api/auth/registro` | Registra un nuevo usuario | No |
+| `POST` | `/api/auth/login` | Inicia sesión y devuelve un token JWT | No |
+| `GET` | `/api/auth/yo` | Obtiene los datos del usuario autenticado | **Bearer Token** |
+
+**Ejemplo de cuerpo (`POST /api/auth/login` y `registro`):**
 ```json
 {
+  "correo": "carlos@farmaco.com",
+  "clave": "clave123"
+}
+```
+
+---
+
+### 👥 Clientes (`/api/Cliente`)
+
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/api/Cliente` | Lista todos los clientes |
+| `GET` | `/api/Cliente/{dni}` | Busca un cliente por su DNI |
+| `GET` | `/api/Cliente/frecuentes` | Lista los clientes frecuentes (por puntos) |
+| `POST` | `/api/Cliente` | Registra un nuevo cliente |
+| `PUT` | `/api/Cliente/{dni}` | Actualiza los datos de un cliente |
+| `DELETE` | `/api/Cliente/{dni}` | Elimina un cliente por DNI |
+
+**Ejemplo de cuerpo (`POST /api/Cliente`):**
+```json
+{
+  "dni": "75889900",
+  "nombre": "Andrés",
+  "apellido": "Salazar",
+  "correo": "andres.salazar@gmail.com",
+  "telefono": "944556677",
+  "puntosConseguidos": 50
+}
+```
+
+---
+
+### 🧑‍⚕️ Empleados (`/api/Empleados`)
+
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/api/Empleados` | Lista todos los empleados |
+| `GET` | `/api/Empleados/{dni}` | Busca un empleado por su DNI |
+| `GET` | `/api/Empleados/cargo/{cargo}` | Filtra empleados por cargo (ej. `FARMACEUTICO`, `CAJERO`, `ALMACENERO`) |
+| `POST` | `/api/Empleados` | Registra un nuevo empleado |
+| `PUT` | `/api/Empleados/{dni}` | Actualiza los datos de un empleado |
+| `DELETE` | `/api/Empleados/{dni}` | Elimina un empleado por DNI |
+
+**Ejemplo de cuerpo (`POST /api/Empleados`):**
+```json
+{
+  "dni": "74859612",
+  "nombre": "Diego",
+  "apellido": "Ramírez",
+  "correo": "diego.ramirez@farmaco.com",
+  "telefono": "955667788",
+  "cargo": "CAJERO"
+}
+```
+
+---
+
+### 💊 Productos (`/api/Producto`)
+
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/api/Producto` | Lista todos los productos |
+| `GET` | `/api/Producto/{nombre}` | Busca un producto por su nombre |
+| `GET` | `/api/producto/buscar` | Búsqueda con paginación, filtro y ordenamiento |
+| `POST` | `/api/Producto` | Registra un nuevo producto |
+| `PUT` | `/api/Producto/{nombre}` | Actualiza un producto existente |
+| `DELETE` | `/api/Producto/{nombre}` | Elimina un producto por nombre |
+
+**Parámetros de consulta para `/api/producto/buscar`:**
+- `pagina`: Número de página (ej. `1`)
+- `tamano`: Cantidad de registros por página (ej. `2`)
+- `precioMinimo`: Filtro por precio mínimo (ej. `15`)
+- `orden`: Campo de ordenamiento (ej. `precio`)
+
+*Ejemplo:* `GET /api/producto/buscar?precioMinimo=15&orden=precio&pagina=1&tamano=2`
+
+**Ejemplo de cuerpo (`POST /api/Producto`):**
+```json
+{
+  "nombre": "Cloroformo",
+  "precio": 2.50,
+  "stock": 10
+}
+```
+
+---
+
+### 🚚 Proveedores (`/api/Proveedores`)
+
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/api/Proveedores` | Lista todos los proveedores |
+| `GET` | `/api/Proveedores/{nombreProveedor}` | Busca un proveedor por nombre |
+| `POST` | `/api/Proveedores` | Registra un nuevo proveedor |
+| `PUT` | `/api/Proveedores/{nombreProveedor}` | Actualiza un proveedor existente |
+| `DELETE` | `/api/Proveedores/{nombreProveedor}` | Elimina un proveedor por nombre |
+
+**Ejemplo de cuerpo (`POST /api/Proveedores`):**
+```json
+{
+  "nombreProveedor": "Distribuidora FarmaSur",
+  "telefonoProveedor": "987654321",
+  "direccionProveedor": "Av. Los Héroes 450, Lima"
+}
+```
+
+---
+
+### 🧾 Ventas (`/api/Ventas`)
+
+| Método | Endpoint | Descripción |
+| :--- | :--- | :--- |
+| `GET` | `/api/ventas` | Lista todas las ventas registradas |
+| `GET` | `/api/ventas/{id}` | Obtiene el detalle de una venta por ID |
+| `POST` | `/api/Ventas` | Registra una nueva venta |
+| `PUT` | `/api/Ventas/{id}` | Actualiza una venta existente |
+| `DELETE` | `/api/Ventas/{id}` | Elimina una venta por ID |
+
+**Ejemplo de cuerpo (`POST /api/Ventas`):**
+```json
+{
+  "clienteDni": "72451234",
   "idVenta": 5,
   "nombreCliente": "Ana Torres",
-  "nombreProducto": "Paracetamol 500mg",
+  "nombreProducto": "Vitamina C",
   "cantidad": 2,
-  "precio": 2.50,
-  "metodoPago": "YAPE_PLIN"
+  "precio": 12.50,
+  "metodoPago": "TARJETA"
 }
 ```
-
-#### Ejemplo: Actualizar Venta (`PUT /api/ventas/5`)
-```json
-{
-  "nombreCliente": "Ana Torres",
-  "nombreProducto": "Ibuprofeno 400mg",
-  "cantidad": 3,
-  "precio": 3.00,
-  "metodoPago": "EFECTIVO"
-}
-```
+*(Métodos de pago soportados en pruebas: `TARJETA`, `YAPE_PLIN`, etc.)*
 
 ---
 
-### 2. Módulo de Clientes (`/api/cliente`)
-Administra el registro de clientes de la farmacia (hereda de `Persona.cs`).
+## 🧪 Pruebas con Postman
 
-| Método | Endpoint | Descripción | Respuestas |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/cliente` | Lista todos los clientes. | `200 OK` |
-| `GET` | `/api/cliente/{identificador}` | Busca un cliente específico. | `200 OK`, `404 Not Found` |
-| `POST` | `/api/cliente` | Registra un nuevo cliente. | `201 Created`, `400 Bad Request`, `409 Conflict` |
-| `PUT` | `/api/cliente/{identificador}` | Actualiza los datos de un cliente existente. | `200 OK`, `400 Bad Request`, `404 Not Found` |
-| `DELETE` | `/api/cliente/{identificador}` | Elimina un cliente del sistema. | `200 OK`, `404 Not Found` |
+En la carpeta `Postman/` encontrarás las colecciones listas para importar:
 
-#### Ejemplo: Crear Cliente (`POST /api/cliente`)
-```json
-{
-  "dni": "74859632",
-  "nombre": "Carlos",
-  "apellido": "Mendoza",
-  "telefono": "987654321",
-  "email": "carlos.mendoza@correo.com"
-}
-```
-
----
-
-### 3. Módulo de Empleados (`/api/empleados`)
-Gestiona el personal que labora en la farmacia (hereda de `Persona.cs`).
-
-| Método | Endpoint | Descripción | Respuestas |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/empleados` | Lista todos los empleados registrados. | `200 OK` |
-| `GET` | `/api/empleados/{identificador}` | Busca un empleado específico. | `200 OK`, `404 Not Found` |
-| `POST` | `/api/empleados` | Registra un nuevo empleado. | `201 Created`, `400 Bad Request`, `409 Conflict` |
-| `PUT` | `/api/empleados/{identificador}` | Actualiza los datos de un empleado. | `200 OK`, `400 Bad Request`, `404 Not Found` |
-| `DELETE` | `/api/empleados/{identificador}` | Elimina un empleado del registro. | `200 OK`, `404 Not Found` |
-
-#### Ejemplo: Crear Empleado (`POST /api/empleados`)
-```json
-{
-  "dni": "45612378",
-  "nombre": "Lucía",
-  "apellido": "Gómez",
-  "telefono": "912345678",
-  "cargo": "Químico Farmacéutico",
-  "salario": 2800.00
-}
-```
-
----
-
-### 4. Módulo de Productos (`/api/producto`)
-Controla el inventario y catálogo de medicamentos disponibles.
-
-| Método | Endpoint | Descripción | Respuestas |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/producto` | Lista todos los productos del catálogo. | `200 OK` |
-| `GET` | `/api/producto/{nombre}` | Busca un producto por su nombre o código. | `200 OK`, `404 Not Found` |
-| `POST` | `/api/producto` | Agrega un nuevo producto al inventario. | `201 Created`, `400 Bad Request`, `409 Conflict` |
-| `PUT` | `/api/producto/{nombre}` | Actualiza precio o stock de un producto. | `200 OK`, `400 Bad Request`, `404 Not Found` |
-| `DELETE` | `/api/producto/{nombre}` | Elimina un producto del inventario. | `200 OK`, `404 Not Found` |
-
-#### Ejemplo: Crear Producto (`POST /api/producto`)
-```json
-{
-  "nombre": "Amoxicilina 500mg",
-  "categoria": "Antibióticos",
-  "precio": 8.50,
-  "stock": 100
-}
-```
-
----
-
-### 5. Módulo de Proveedores (`/api/proveedores`)
-Gestiona los laboratorios y distribuidores que abastecen a la farmacia.
-
-| Método | Endpoint | Descripción | Respuestas |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/proveedores` | Lista todos los proveedores. | `200 OK` |
-| `GET` | `/api/proveedores/{identificador}` | Busca un proveedor específico. | `200 OK`, `404 Not Found` |
-| `POST` | `/api/proveedores` | Registra un nuevo proveedor. | `201 Created`, `400 Bad Request`, `409 Conflict` |
-| `PUT` | `/api/proveedores/{identificador}` | Actualiza los datos de un proveedor. | `200 OK`, `400 Bad Request`, `404 Not Found` |
-| `DELETE` | `/api/proveedores/{identificador}` | Elimina un proveedor del sistema. | `200 OK`, `404 Not Found` |
-
-#### Ejemplo: Crear Proveedor (`POST /api/proveedores`)
-```json
-{
-  "ruc": "20547896321",
-  "nombreEmpresa": "Laboratorios Portugal",
-  "telefono": "014587963",
-  "direccion": "Av. Industrial 450, Lima"
-}
-```
-
----
-
-## ⚠️ Manejo de Errores (`ManejoErrores.cs` y `ErrorResponse.cs`)
-
-El middleware centralizado captura las excepciones lanzadas en la capa de servicios y devuelve un JSON estandarizado según el tipo de error:
-
-* **`400 Bad Request` (Validaciones de DTO):**
-```json
-{
-  "status": 400,
-  "errors": {
-    "MetodoPago": [
-      "Método de pago no válido"
-    ]
-  }
-}
-```
-
-* **`404 Not Found` (`RecursoNoEncontradoException`):**
-```json
-{
-  "codigo": 404,
-  "mensaje": "No existe una venta con el ID 99"
-}
-```
-
-* **`409 Conflict` (`ConflictoException`):**
-```json
-{
-  "codigo": 409,
-  "mensaje": "Ya existe una venta registrada con el ID 1"
-}
-```
-
----
-
-## 🧪 Colecciones de Postman
-
-El proyecto incluye 5 colecciones en la raíz con casos de prueba de éxito y de error, además de scripts de validación automática (*Tests*):
-
-* `Cliente.postman_collection.json`
-* `Empleados.postman_collection.json`
-* `Producto.postman_collection.json`
-* `Proveedor.postman_collection.json`
-* `Ventassss1.postman_collection.json`
+1. Abre **Postman** y haz clic en **Import**.
+2. Selecciona los archivos `.json` ubicados en la carpeta `Postman/`.
+3. Para probar rutas protegidas con JWT:
+   - Ejecuta la petición **registro** y luego **login** en la colección `jwt.postman_collection.json`.
+   - El script de pruebas en `login` guarda automáticamente el token en la variable de colección `{{token}}` para usarlo en el endpoint `/api/auth/yo`.
+4. Las colecciones incluyen tanto peticiones válidas (CRUD) como casos de prueba negativos (datos duplicados, formatos inválidos, recursos inexistentes) para verificar las validaciones y el manejo de errores.
